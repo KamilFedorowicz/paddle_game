@@ -250,7 +250,7 @@ inline void initial_screen() // welcome screen and asks for the number of lives
 {
     system("clear");
     while (true) {
-        std::cout << "Welcome to my paddle bounce game!! \n Provide the number of lives (must be 1 or greater): ";
+        std::cout << "Small change. Welcome to my paddle bounce game!! \n Provide the number of lives (must be 1 or greater): ";
         std::cin >> lives;
 
         // Check if the input is valid
