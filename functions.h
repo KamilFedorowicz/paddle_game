@@ -25,19 +25,22 @@ extern int bricks[height][width];
 inline void initialise_bricks() {
     for (int i = 0; i < height; i++) { // Fixed array bounds
         for (int j = 0; j < width; j++) {
-            if (i < (height - 2) && i > (height - 8) && j > 8 && j < 16) {
+            if (i < (height - 2) && i > (height - 8) && j > (width/2-3) && j < (width/2+3)) {
                 bricks[i][j] = rand() % 2;
             } else {
                 bricks[i][j] = 0;
             }
+            
+//                if (i < (height - 2) && i > (height - 5) && j > 8 && j < 12) {
+//                    bricks[i][j] = 1;
+//                } else {
+//                    bricks[i][j] = 0;
+//                }
+            
+            
         }
     }
 }
-
-//inline void initialise_bricks() // just a dummy function with a single var
-//{
-//    bricks[15][10]=1;
-//}
 
 inline int sum_bricks() {
     int sum = 0;
@@ -53,12 +56,12 @@ inline void initialise_ball() {
     vx = (rand() % 2 == 0) ? 1 : -1;
     vy = 1;
     xB = width / 2;
-    yB = rand() % ((height - 1) / 2) + height/2;
+    yB = rand() % ((height - 1) / 2) + 0*height/2;
     
-//    vx = 0;
+//    vx = 1;
 //    vy = 1;
-//    xB = 10;
-//    yB = 5;
+//    xB = 7;
+//    yB = 14;
 }
 
 inline void Setup() {
@@ -119,7 +122,7 @@ inline void Draw() {
     printw("\n");
     printw("to move press: \n");
     printw("left->a; right->d \n");
-    printw("up->w; down->s \n");
+    printw("up->w; down->s (no more than at y=3) \n");
     printw("\n vx: %d", vx);
     printw("\n vy: %d", vy);
     printw("\n x: %d", xB);
@@ -188,19 +191,29 @@ inline void paddle_collision() {
 
 inline void wall_collision() // wall colisions
 {
-    if ((yB + vy > height - 1 && xB + vx == width - 1) || (yB + vy > height - 1 && xB + vx < 1)) { // corner colision
+    if ((yB + vy > height  && xB + vx == width) || (yB + vy > height  && xB + vx <= 0)) { // corner colision
         vy = -vy;
         vx = -vx;
-    } else if (yB + vy > height - 1) { // top wall colision
+    } else if (yB + vy > height) { // top wall colision
         vy = -vy;
-    } else if (xB + vx >= width - 1 || xB + vx < 1) { // side walls
+    } else if (xB + vx >= width || xB + vx < 1) { // side walls
         vx = -vx;
     }
 }
 
 inline void brick_collision() // wall colisions
 {
-    if (bricks[yB + vy][xB + vx] == 1) {
+    if (bricks[yB + vy][xB] == 1) 
+    {
+        bricks[yB + vy][xB] = 0;
+        vy = -vy;
+    } else if (bricks[yB][xB + vx] == 1)
+    {
+        bricks[yB][xB + vx] = 0;
+        vx = -vx;
+    }
+    else if (bricks[yB + vy][xB + vx] == 1)
+    {
         bricks[yB + vy][xB + vx] = 0;
         vy = -vy;
         vx = -vx;
@@ -250,7 +263,7 @@ inline void initial_screen() // welcome screen and asks for the number of lives
 {
     system("clear");
     while (true) {
-        std::cout << "Small change. Welcome to my paddle bounce game!! \n Provide the number of lives (must be 1 or greater): ";
+        std::cout << "Small change2. Welcome to my paddle bounce game!! \n Provide the number of lives (must be 1 or greater): ";
         std::cin >> lives;
 
         // Check if the input is valid
